@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+<head>
+  {{ partial "head.html" . }}
+</head>
+
+<body>
+  {{ partial "header.html" . }}
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+  {{ $js := resources.Get "js/lightbox.js" }}
+  <script src="{{ $js.RelPermalink }}"></script>
+  {{ $scroll := resources.Get "js/scroll.js" }}
+  <script src="{{ $scroll.RelPermalink }}"></script>
+</body>
+
+</html>

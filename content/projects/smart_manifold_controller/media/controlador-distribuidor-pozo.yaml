@@ -1,0 +1,601 @@
+esphome:
+  name: controlador-distribuidor-pozo
+  friendly_name: controlador-distribuidor-pozo
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "<KEY>"
+
+ota:
+  platform: esphome  
+  password: "<PASSWORD>"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Controlador-Distribuidor-Pozo"
+    password: "<PASSWORD>"
+
+captive_portal:
+    
+
+
+i2c:
+  sda: 6
+  scl: 7
+  scan: true
+  id: bus_a
+  frequency: 100kHz
+
+# GPIO expander
+mcp23017:
+  - id: 'mcp23017_hub_1'
+    address: 0x20
+  - id: 'mcp23017_hub_2'
+    address: 0x24
+
+switch:
+# Valve 1
+  - platform: gpio
+    internal: true 
+    id: "valve_1_open_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 8 # Use pin 1-B0
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_1_close_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 9 # Use pin 1-B1
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_1_select_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 0 # Use pin 1-A0
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_1_on_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 1 # Use pin 1-A1
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_1_off_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 2 # Use pin 1-A2
+      mode:
+        output: true
+      inverted: false
+
+# Valve 2
+  - platform: gpio
+    internal: true 
+    id: "valve_2_open_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 10 # Use pin 1-B2
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_2_close_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 11 # Use pin 1-B3
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_2_select_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 5 # Use pin 1-A5
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_2_on_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 4 # Use pin 1-A4
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_2_off_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 3 # Use pin 1-A53/
+      mode:
+        output: true
+      inverted: false
+
+# Valve 3
+  - platform: gpio
+    internal: true 
+    id: "valve_3_open_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 12 # Use pin 1-B4
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_3_close_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 13 # Use pin 1-B5
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_3_select_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 6 # Use pin 1-A6
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_3_on_led"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 7 # Use pin 1-A7
+      mode:
+        output: true
+      inverted: false    
+  - platform: gpio
+    internal: true
+    id: "valve_3_off_led"
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 8 # Use pin 2-B0
+      mode:
+        output: true
+      inverted: false  
+
+# Valve 4
+  - platform: gpio
+    internal: true 
+    id: "valve_4_open_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 14 # Use pin 1-B6
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_4_close_pin"
+    pin:
+      mcp23xxx: mcp23017_hub_1
+      number: 15 # Use pin 1-B7
+      mode:
+        output: true
+  - platform: gpio
+    internal: true
+    id: "valve_4_select_led"
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 9 # Use pin 2-B1
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    internal: true
+    id: "valve_4_on_led"
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 10 # Use pin 2-B2
+      mode:
+        output: true
+      inverted: false     
+  - platform: gpio
+    internal: true
+    id: "valve_4_off_led"
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 11 # Use pin 2-B3
+      mode:
+        output: true
+      inverted: false          
+
+# Template switches putting together the open, close and state signals for each valve
+# Valve 1
+  - platform: template
+    name: "Valve 1 Switch"
+    id: "valve_1_switch"
+    lambda: |-
+      if (id(valve_1_open_signal).state) {
+        return true;
+      } else {
+        return false;
+      }
+    turn_on_action:
+      - switch.turn_on: valve_1_open_pin
+      - switch.turn_off: valve_1_close_pin
+    turn_off_action:
+      - switch.turn_off: valve_1_open_pin
+      - switch.turn_on: valve_1_close_pin
+
+# Valve 2
+  - platform: template
+    name: "Valve 2 Switch"
+    id: "valve_2_switch"
+    lambda: |-
+      if (id(valve_2_open_signal).state) {
+        return true;
+      } else {
+        return false;
+      }
+    turn_on_action:
+      - switch.turn_on: valve_2_open_pin
+      - switch.turn_off: valve_2_close_pin
+    turn_off_action:
+      - switch.turn_off: valve_2_open_pin
+      - switch.turn_on: valve_2_close_pin      
+
+# Valve 3
+  - platform: template
+    name: "Valve 3 Switch"
+    id: "valve_3_switch"
+    lambda: |-
+      if (id(valve_3_open_signal).state) {
+        return true;
+      } else {
+        return false;
+      }
+    turn_on_action:
+      - switch.turn_on: valve_3_open_pin
+      - switch.turn_off: valve_3_close_pin
+    turn_off_action:
+      - switch.turn_off: valve_3_open_pin
+      - switch.turn_on: valve_3_close_pin  
+
+# Valve 4
+  - platform: template
+    name: "Valve 4 Switch"
+    id: "valve_4_switch"
+    lambda: |-
+      if (id(valve_4_open_signal).state) {
+        return true;
+      } else {
+        return false;
+      }
+    turn_on_action:
+      - switch.turn_on: valve_4_open_pin
+      - switch.turn_off: valve_4_close_pin
+    turn_off_action:
+      - switch.turn_off: valve_4_open_pin
+      - switch.turn_on: valve_4_close_pin        
+
+# -------------------------
+binary_sensor:
+
+# Physical button actions
+  - platform: gpio
+    internal: true
+    name: valve_select_button
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 12 # Use pin 2-B4
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - select.next: valve_select
+
+  - platform: gpio
+    internal: true
+    name: valve_toggle_button
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 13 # Use pin 2-B5
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        lambda: |-
+          auto valve = id(valve_select).state;
+          if(valve == "valve1"){
+            id(valve_1_switch).toggle();
+          }
+          else if(valve == "valve2"){
+            id(valve_2_switch).toggle();
+          }        
+          else if(valve == "valve3"){
+            id(valve_3_switch).toggle();
+          }        
+          else if(valve == "valve4"){
+            id(valve_4_switch).toggle();
+          }        
+  
+# -------------------------
+# Open/close state sensors per valve with additional logic to save energy when the valve reaches its intended state
+
+# Valve 1
+  - platform: gpio
+    internal: true
+    name: "valve_1_open_signal"
+    id: "valve_1_open_signal"
+    #publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 14 # Use pin 2-B6
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_1_open_pin
+        - switch.turn_on: valve_1_on_led
+        - switch.turn_off: valve_1_off_led
+  - platform: gpio
+    internal: true
+    name: "valve_1_close_signal"
+    id: "valve_1_close_signal"
+    #publish_initial_state: false
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 0 # Use pin 2-A0
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_1_close_pin
+        - switch.turn_off: valve_1_on_led
+        - switch.turn_on: valve_1_off_led   
+        
+# Valve 2
+  - platform: gpio
+    internal: true
+    name: "valve_2_open_signal"
+    id: "valve_2_open_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 1 # Use pin 2-A1
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_2_open_pin
+        - switch.turn_on: valve_2_on_led
+        - switch.turn_off: valve_2_off_led
+  - platform: gpio
+    internal: true
+    name: "valve_2_close_signal"
+    id: "valve_2_close_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 2 # Use pin 2-A2
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_2_close_pin
+        - switch.turn_off: valve_2_on_led 
+        - switch.turn_on: valve_2_off_led 
+
+# Valve 3
+  - platform: gpio
+    internal: true
+    name: "valve_3_open_signal"
+    id: "valve_3_open_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 3 # Use pin 2-A3
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_3_open_pin
+        - switch.turn_on: valve_3_on_led
+        - switch.turn_off: valve_3_off_led
+  - platform: gpio
+    internal: true
+    name: "valve_3_close_signal"
+    id: "valve_3_close_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 4 # Use pin 2-A4
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_3_close_pin
+        - switch.turn_off: valve_3_on_led
+        - switch.turn_on: valve_3_off_led
+
+# Valve 4
+  - platform: gpio
+    internal: true
+    name: "valve_4_open_signal"
+    id: "valve_4_open_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 5 # Use pin 2-A5
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_4_open_pin
+        - switch.turn_on: valve_4_on_led
+        - switch.turn_off: valve_4_off_led
+  - platform: gpio
+    internal: true
+    name: "valve_4_close_signal"
+    id: "valve_4_close_signal"
+    publish_initial_state: true
+    pin:
+      mcp23xxx: mcp23017_hub_2
+      number: 6 # Use pin 2-A6
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_off: valve_4_close_pin
+        - switch.turn_off: valve_4_on_led
+        - switch.turn_on: valve_4_off_led
+
+
+# Select for choosing valve using less buttons
+select:
+  - platform: template
+    internal: true
+    name: Valve Select
+    id: valve_select
+    options:
+     - "valve1"
+     - "valve2"
+     - "valve3"
+     - "valve4"
+    optimistic: true
+    set_action:
+      - lambda: |-
+          if(x == "valve1"){
+            id(valve_1_select_led).turn_on();
+            id(valve_2_select_led).turn_off();
+            id(valve_3_select_led).turn_off();
+            id(valve_4_select_led).turn_off();
+          }
+          else if(x == "valve2"){
+            id(valve_1_select_led).turn_off();
+            id(valve_2_select_led).turn_on();
+            id(valve_3_select_led).turn_off();
+            id(valve_4_select_led).turn_off();
+          }
+          else if(x == "valve3"){
+            id(valve_1_select_led).turn_off();
+            id(valve_2_select_led).turn_off();
+            id(valve_3_select_led).turn_on();
+            id(valve_4_select_led).turn_off();
+          }
+          else if(x == "valve4"){
+            id(valve_1_select_led).turn_off();
+            id(valve_2_select_led).turn_off();
+            id(valve_3_select_led).turn_off();
+            id(valve_4_select_led).turn_on();
+          }
+
+# -----------------------
+
+# 476 pulsos por litro https://www.tinytronics.nl/shop/en/sensors/liquid/yf-b10-water-flow-sensor-brass-g1
+# Ese valor no parece ser correcto, al calcular el volumen bombeado 
+# he llegado al valor de 561 pulsos por litro
+# Water Flow sensors
+sensor:
+  - platform: pulse_meter
+    pin: 1
+    unit_of_measurement: 'L/min'
+    name: 'water_flow_valve1'
+    internal_filter: 50us
+    state_class: "measurement"
+    filters:
+      - lambda: return x / 561;
+    total: 
+      name: "water_total_valve1"
+      unit_of_measurement: "L"
+      accuracy_decimals: 1
+      state_class: "total_increasing"
+      filters:
+        - lambda: return x / 561;
+
+  - platform: pulse_meter
+    pin: 10
+    unit_of_measurement: 'L/min'
+    name: 'water_flow_valve2'
+    internal_filter: 50us
+    state_class: "measurement"
+    filters:
+      - lambda: return x / 561;
+    total: 
+      name: "water_total_valve2"
+      unit_of_measurement: "L"
+      accuracy_decimals: 1
+      state_class: "total_increasing"
+      filters:
+        - lambda: return x / 561;
+
+
+  - platform: pulse_meter
+    pin: 5
+    unit_of_measurement: 'L/min'
+    name: 'water_flow_valve3'
+    internal_filter: 50us
+    state_class: "measurement"
+    filters:
+      - lambda: return x / 561; 
+    total: 
+      name: "water_total_valve3"
+      unit_of_measurement: "L"
+      accuracy_decimals: 1
+      state_class: "total_increasing"
+      filters:
+        - lambda: return x / 561;
+
+  - platform: pulse_meter
+    pin: 4 
+    unit_of_measurement: 'L/min'
+    name: 'water_flow_valve4'
+    internal_filter: 50us 
+    state_class: "measurement"
+    filters:
+      - lambda: return x / 561; 
+    total: 
+      name: "water_total_valve4"
+      unit_of_measurement: "L"
+      accuracy_decimals: 1
+      state_class: "total_increasing"
+      filters:
+        - lambda: return x / 561;

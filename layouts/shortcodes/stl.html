@@ -1,0 +1,40 @@
+{{ $file := .Get 0 }}
+{{ $height := .Get 1 | default "500px" }}
+{{ $id := printf "stl-%s" (md5 $file) }}
+{{ if .IsNamedParams }}
+{{ with .Get "id" }}{{ $id = . }}{{ end }}
+{{ end }}
+{{ $resource := .Page.Resources.GetMatch $file }}
+{{ $src := "" }}
+
+{{ if $resource }}
+{{ $src = $resource.RelPermalink }}
+{{ else }}
+{{/* Fallback if it's external or not a page resource */}}
+{{ $src = $file | relURL }}
+{{ end }}
+
+{{ if not (.Page.Scratch.Get "three_import_map_loaded") }}
+{{ .Page.Scratch.Set "three_import_map_loaded" true }}
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+{{ end }}
+
+<div id="{{ $id }}"
+    style="width: 100%; height: {{ $height }}; border-radius: 8px; overflow: hidden; margin: 2rem 0; background: #111; border: 1px solid var(--border-color); position: relative;">
+    <div
+        style="position: absolute; top: 1rem; left: 1rem; z-index: 10; color: white; background: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px; font-family: sans-serif; font-size: 0.8rem; pointer-events: none;">
+        Drag to rotate • Scroll to zoom
+    </div>
+</div>
+
+<script type="module">
+    import { initSTLViewer } from '{{ "js/stl-viewer.js" | relURL }}';
+    initSTLViewer('{{ $id }}', '{{ $src }}');
+</script>

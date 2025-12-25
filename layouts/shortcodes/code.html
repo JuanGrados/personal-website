@@ -1,0 +1,34 @@
+{{ $file := .Get 0 }}
+{{ $lang := .Get 1 }}
+{{ $height := .Get 2 | default "400px" }}
+{{ $resource := .Page.Resources.GetMatch $file }}
+
+{{ if $resource }}
+{{ if not $lang }}
+{{ $ext := path.Ext $file }}
+{{ $lang = strings.TrimPrefix "." $ext }}
+{{ end }}
+
+<div
+    style="border: 1px solid var(--border-color); border-radius: 8px; margin: 2rem 0; overflow: hidden; background: #272822;">
+    <!-- Monokai bg color match approximately -->
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <div
+            style="font-family: var(--font-body); font-size: 0.9rem; color: var(--text-color); opacity: 0.8; font-family: monospace;">
+            {{ path.Base $file }}
+        </div>
+        <a href="{{ $resource.RelPermalink }}" download class="btn"
+            style="padding: 0.4rem 1.2rem; font-size: 0.75rem; border-color: rgba(255,255,255,0.3);">
+            Download
+        </a>
+    </div>
+    <div style="max-height: {{ $height }}; overflow: auto;">
+        {{ highlight $resource.Content $lang "linenos=true,style=monokai" }}
+    </div>
+</div>
+{{ else }}
+<div style="color: #ff6b6b; border: 1px solid #ff6b6b; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+    <strong>Error:</strong> Code file not found: <code>{{ $file }}</code>
+</div>
+{{ end }}

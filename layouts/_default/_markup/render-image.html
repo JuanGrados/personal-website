@@ -1,0 +1,51 @@
+{{- $u := urls.Parse .Destination -}}
+{{- $src := $u.Path -}}
+{{- $width := $u.Query.Get "width" -}}
+{{- $align := $u.Query.Get "align" -}}
+{{- $ratio := $u.Query.Get "ratio" -}}
+{{- $cols := $u.Query.Get "cols" -}}
+{{- $offset := $u.Query.Get "offset" -}}
+{{- $image := .Page.Resources.GetMatch $src -}}
+{{- if not $image -}}
+{{- $image = resources.Get $src -}}
+{{- end -}}
+
+{{- $containerStyle := "" -}}
+{{- $imgStyle := "" -}}
+
+{{- if $cols -}}
+{{- /* Grid layout: apply grid-column to container, ignore width */ -}}
+{{- if $offset -}}
+{{- $containerStyle = printf "grid-column: %s / span %s;" (add (int $offset) 1) $cols -}}
+{{- else -}}
+{{- $containerStyle = printf "grid-column: span %s;" $cols -}}
+{{- end -}}
+{{- /* In grid mode, image should fill container */ -}}
+{{- $imgStyle = "width: 100%; height: auto;" -}}
+{{- /* Ratio applies to the image itself */ -}}
+{{- if $ratio -}}
+{{- $imgStyle = printf "%s aspect-ratio: %s; object-fit: cover;" $imgStyle ($ratio | safeCSS) -}}
+{{- end -}}
+{{- else -}}
+{{- /* Non-grid layout: all styles apply directly to image */ -}}
+{{- if $width -}}
+{{- $imgStyle = printf "width: %s; max-width: 100%%;" $width -}}
+{{- end -}}
+{{- if $ratio -}}
+{{- $imgStyle = printf "%s aspect-ratio: %s; object-fit: cover;" $imgStyle ($ratio | safeCSS) -}}
+{{- end -}}
+{{- end -}}
+
+{{- if .Title }}
+<figure class="inline-image {{ if $align }}align-{{ $align }}{{ end }}" {{ if $containerStyle
+    }}style="{{ $containerStyle | safeCSS }}" {{ end }}>
+    <img src="{{ $src | safeURL }}" alt="{{ .Text }}" class="lightbox-trigger" {{ if $imgStyle
+        }}style="{{ $imgStyle | safeCSS }}" {{ end }}>
+    <figcaption>{{ .Title }}</figcaption>
+</figure>
+{{- else }}
+<img src="{{ $src | safeURL }}" alt="{{ .Text }}"
+    class="lightbox-trigger inline-image-simple {{ if $align }}align-{{ $align }}{{ end }}" {{ if $containerStyle
+    }}style="{{ $containerStyle | safeCSS }} {{ $imgStyle | safeCSS }}" {{ else if $imgStyle
+    }}style="{{ $imgStyle | safeCSS }}" {{ end }}>
+{{- end -}}

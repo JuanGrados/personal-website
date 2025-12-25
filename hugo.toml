@@ -1,0 +1,20 @@
+baseURL = 'https://juan-grados.com'
+languageCode = 'en-us'
+title = 'My Projects by Juan Grados'
+theme = [] # No theme, using local layouts
+
+[params]
+  description = "and this is the place where I document and share my projects."
+  author = "Juan Grados"
+
+[menu]
+  [[menu.main]]
+    identifier = "projects"
+    name = "Projects"
+    url = "/#projects"
+    weight = 10
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 20

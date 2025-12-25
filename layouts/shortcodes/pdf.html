@@ -1,0 +1,15 @@
+{{ $src := .Get 0 }}
+{{ $align := .Get 1 | default "left" }}
+
+{{ $justify := "flex-start" }}
+{{ if eq $align "center" }}{{ $justify = "center" }}{{ end }}
+{{ if eq $align "right" }}{{ $justify = "flex-end" }}{{ end }}
+
+<div style="display: flex; justify-content: {{ $justify }}; width: 100%; margin: 2rem 0;">
+    <object data="{{ $src }}" type="application/pdf" width="50%" height="600px"
+        style="border-radius: 8px; border: 1px solid var(--border-color);">
+        <p>It appears you don't have a PDF plugin for this browser.
+            No biggie... you can <a href="{{ $src }}">click here to
+                download the PDF file.</a></p>
+    </object>
+</div>

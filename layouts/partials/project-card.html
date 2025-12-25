@@ -1,0 +1,15 @@
+<article class="project-card reveal">
+    <a href="{{ .RelPermalink }}" class="project-link">
+        <div class="project-image">
+            {{ with .Resources.GetMatch "media/cover.*" }}
+            <img src="{{ .RelPermalink }}" alt="{{ $.Title }} cover">
+            {{ else }}
+            <div class="placeholder-image" style="background-color: var(--card-bg); height: 100%; width: 100%;"></div>
+            {{ end }}
+        </div>
+        <div class="project-info">
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Summary | truncate 100 }}</p>
+        </div>
+    </a>
+</article>

@@ -1,0 +1,37 @@
+{{ define "main" }}
+<section class="page-header">
+    <div class="container">
+        {{ with .Resources.GetMatch "media/cover.*" }}
+        <div class="project-header-image">
+            <img src="{{ .RelPermalink }}" alt="{{ $.Title }}"
+                style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 2rem;">
+        </div>
+        {{ end }}
+        <h1>{{ .Title }}</h1>
+        {{ if .Params.date }}
+        <p class="date">{{ .Date.Format "January 2, 2006" }}</p>
+        {{ end }}
+    </div>
+</section>
+
+<section class="page-content">
+    <div class="container">
+        <article class="prose">
+            {{ .Content }}
+        </article>
+
+        {{ if .Params.gallery }}
+        <div class="gallery-section">
+            <h2>Project Gallery</h2>
+            <div class="gallery-grid">
+                {{ range .Params.gallery }}
+                <div class="gallery-item">
+                    <img src="{{ . }}" alt="Project screenshot">
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</section>
+{{ end }}

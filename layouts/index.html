@@ -1,0 +1,36 @@
+{{ define "main" }}
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <!-- Split title for layout flexibility -->
+            <h1>
+                HELLO, I'M <br>
+                <span class="highlight"><i>{{ .Site.Params.author }}</i></span>
+            </h1>
+            <p class="hero-subtitle" style="max-width: 100%;">{{ .Site.Params.description }}</p>
+            <a href="#projects" class="btn primary-btn">To the projects</a>
+        </div>
+    </div>
+</section>
+
+<!-- Marquee Section -->
+<div class="marquee-container">
+    <div class="marquee-content">
+        <span class="marquee-item">3D Printing + Electronics + Home Automation + Design + </span>
+        <span class="marquee-item">3D Printing + Electronics + Home Automation + Design + </span>
+        <span class="marquee-item">3D Printing + Electronics + Home Automation + Design + </span>
+    </div>
+</div>
+
+<section id="projects" class="projects-section">
+    <div class="container">
+        <h2 class="section-title">My Projects</h2>
+        <div class="projects-grid">
+            {{ range where .Site.RegularPages "Section" "projects" }}
+            {{ partial "project-card.html" . }}
+            {{ end }}
+        </div>
+    </div>
+</section>
+
+{{ end }}

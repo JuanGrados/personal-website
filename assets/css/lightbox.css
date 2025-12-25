@@ -1,0 +1,139 @@
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    z-index: 1001;
+    line-height: 1;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 4rem;
+    cursor: pointer;
+    z-index: 1001;
+    padding: 0 1rem;
+    user-select: none;
+    transition: opacity 0.3s;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.lightbox-nav:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+.inline-image,
+.inline-image-simple {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 2rem 0;
+    cursor: zoom-in;
+}
+
+.gallery-item img {
+    cursor: zoom-in;
+}
+
+figure.inline-image {
+    text-align: center;
+    padding: 0.5rem 0;
+    margin: 1rem 0;
+    /* consistent vertical spacing */
+}
+
+figure.inline-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+figcaption {
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* Alignment utilities */
+.align-left {
+    float: left;
+    margin: 0 1.5rem 1.5rem 0;
+    max-width: 50%;
+}
+
+.align-right {
+    float: right;
+    margin: 0 0 1.5rem 1.5rem;
+    max-width: 50%;
+}
+
+.align-center {
+    display: block;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+/* Clearfix for floats if needed in content */
+.prose::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive alignment - stacking on mobile */
+@media (max-width: 768px) {
+
+    .align-left,
+    .align-right {
+        float: none;
+        margin: 2rem auto;
+        max-width: 100%;
+        display: block;
+        text-align: center;
+    }
+}
