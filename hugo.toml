@@ -1,4 +1,4 @@
-baseURL = 'https://juan-grados.com'
+baseURL = 'https://juan-grados.com/'
 languageCode = 'en-us'
 title = 'My Projects by Juan Grados'
 theme = [] # No theme, using local layouts
